@@ -4,7 +4,6 @@ import insert, IsEmpty from table
 -- Args: Player ply, String cmd, Table conArgs
 concommand.Add "CreateRustGroup", (ply, cmd, conArgs) ->
     if SERVER
-        print "ply in rust group: #{ply\InRustGroup!}"
         if rustgroup.groups and not ply\InRustGroup!
             i = insert rustgroup.groups, RustGroup\New conArgs[1], ply
             rustgroup.groups[i]\SetIndex i

@@ -9,8 +9,7 @@ PLAYER.JoinRustGroup = (i, isLeader) =>
 
 -- Desc: Checks if the player is in a group
 -- Return: Bool inGroup
-PLAYER.InRustGroup = =>
-    return @\GetNWInt("group_index", -1) != -1  
+PLAYER.InRustGroup = => return @\GetNWInt("group_index", -1) != -1  
 
 -- Desc: Checks if the player is a leader of a group
 -- Return: Bool isLeader
