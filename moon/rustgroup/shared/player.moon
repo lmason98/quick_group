@@ -1,5 +1,6 @@
 PLAYER = FindMetaTable "Player"
 
+-- Args: Number index, Bool isLeader
 -- Desc: Player method for joining a group
 -- Args: Number index, Bool isLeader
 PLAYER.JoinRustGroup = (i, isLeader) =>

@@ -1,4 +1,4 @@
 if SERVER
     include "rustgroup/init.lua"
-elseif CLIENT
+else
     include "rustgroup/cl_init.lua"

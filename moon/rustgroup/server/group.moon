@@ -2,10 +2,9 @@ import insert, IsEmpty from table
 
 export class RustGroup
     -- Desc: Inits the RustGroup object
-    -- Args: String name, Player leader
+    -- Args: Player leader
     -- Return: RustGroup object 
-    New: (name="You Suck", leader=nil) =>
-        @name = name
+    New: (leader) =>
         @leader = leader 
         @members = {}
         @index = -1
@@ -36,9 +35,8 @@ export class RustGroup
 
     -- Desc: Pretty prints to the console for debug purposes
     Print: =>
-        print " Group Name: #{@name}"
         print " Leader: #{@leader\GetName!}"
         print " Index: #{@index}"
-        unless IsEmpty @members
+        if not IsEmpty @members
             print " Members:"
             print "\t[#{i}]: #{ply\GetName!}" for i, ply in pairs @members
