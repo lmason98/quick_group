@@ -1,10 +1,13 @@
 import insert from table
 
 interact_dist = 10000
+rustgroup.groups = {}
 
 util.AddNetworkString "rustgroup_creategroup_pressed"
 
-rustgroup.groups = {}
+--[[-------------------------
+--    Functions 
+--]]-------------------------
 
 --[[-------------------------
 --    Hooks
@@ -23,11 +26,13 @@ hook.Add "KeyPress", "rustgroup_invite_ply", (ply, key) ->
 --[[-------------------------
 --   Network Receives 
 --]]-------------------------
-net.Receive "rustgroup_creategroup_pressed", (len, ply) ->
-    print " RECEIVED!"
-    if rustgroup.groups and not ply\InRustGroup!
-        i = insert rustgroup.groups, RustGroup\New ply
-        rustgroup.groups[i]\SetIndex i
-        rustgroup.groups[i]\Add ply 
 
-        ply\ChatPrint "You've created a group"
+-- Desc: Creates a group when a player presses the create group c-menu button
+-- Args: Number len, Player sender 
+net.Receive "rustgroup_creategroup_pressed", (len, sender) ->
+    if rustgroup.groups and not sender\InRustGroup!
+        RustGroup\New sender
+
+        sender\ChatPrint "You have created a group."
+    elseif sender\InRustGroup!
+        sender\ChatPrint "You are already in a group."
