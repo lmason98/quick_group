@@ -4,7 +4,7 @@ Rust Groups
 - [Description](#desc)
 - [API](#api)
 
-# Desc:
+## Desc:
 Adds rust like groups to gmod.
 
-# API:
+## API:
