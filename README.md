@@ -2,8 +2,8 @@ Rust Groups
 ===========
 
 - [Description](#desc)
-- [Console Commands](#console commands)
-- [Player Methods](#player methods)
+- [Console Commands](#console)
+- [Player Methods](#player)
 
 ## Desc:
 Adds rust like groups to gmod.
