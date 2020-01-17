@@ -5,9 +5,11 @@ rustgroup.groups = {}
 
 util.AddNetworkString "rustgroup_creategroup_pressed"
 
+
 --[[-------------------------
 --    Functions 
 --]]-------------------------
+
 
 --[[-------------------------
 --    Hooks
@@ -22,6 +24,11 @@ hook.Add "KeyPress", "rustgroup_invite_ply", (ply, key) ->
         if trace.Entity\IsValid! and trace.Entity\IsPlayer! 
             if interact_dist > ply\GetPos!\DistToSqr trace.HitPos
                 ply\ChatPrint "Hit!"
+
+-- Desc: Removes the player from a group when they disconnect
+-- Args: Player ply
+hook.Add "PlayerDisconnected", "rustgroup_ply_disconnect", (ply) -> ply\LeaveRustGroup! if ply\InRustGroup!
+
 
 --[[-------------------------
 --   Network Receives 
