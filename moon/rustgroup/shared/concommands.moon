@@ -7,8 +7,6 @@ if SERVER
     
     -- Desc: Leaves a group
     concommand.Add "LeaveRustGroup", (ply) ->
-        print "ply is nil: #{ply==nil}"
-        print "ply group is nil: #{ply\GetRustGroup! == nil}"
         if SERVER
             ply\LeaveRustGroup! 
     

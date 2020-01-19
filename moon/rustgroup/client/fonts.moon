@@ -14,6 +14,9 @@ createFont = (name, scale, bold) ->
         weight: weight
         antialias: true
 
+for i = 10, 30
+    createFont "rustgroup", i, true
+    createFont "rustgroup", i, false
+
 createFont "rustgroup", 35, true
 createFont "rustgroup", 35, false
-createFont "rustgroup", 20, true

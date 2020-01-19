@@ -29,6 +29,5 @@ frame.Init = =>
     @ShowCloseButton false
     @SetTitle ""
     @Build!
-    @Hide!
 
 vgui.Register "rustgroup_creategroup_frame", frame, "DFrame"

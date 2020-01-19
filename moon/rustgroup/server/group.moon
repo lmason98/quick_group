@@ -1,4 +1,4 @@
-import insert, IsEmpty, Count, remove from table
+import insert, IsEmpty, Count, remove, RemoveByValue from table
 
 rustgroup.GetGroup = (i) ->
 
@@ -18,7 +18,10 @@ export class RustGroup
 
         return @index, @
 
-    Remove: => remove rustgroup.groups @index
+    Remove: =>
+        remove rustgroup.groups, @index
+        net.Start "rustgroup_group_disbanded"
+        net.Send @members
 
     -- Desc: Determines if the current group Is Valid
     -- Return: Bool isValid
@@ -36,8 +39,14 @@ export class RustGroup
     GetIndex: => return @index
 
     -- Desc: Adds a player to the group
-    -- Args: Player ply
-    Add: (ply) => insert @members, ply
+    -- Args: Player newPly
+    Add: (newPly) =>
+        insert @members, newPly 
+
+        -- send new ply to existing members
+        net.Start "rustgroup_add_member"
+        net.WriteEntity newPly 
+        net.Send @members
 
     -- Desc: Kicks a player from the group
     -- Args: Player toKick
@@ -46,15 +55,16 @@ export class RustGroup
             @\Remove! 
             toKick\ChatPrint "Your group has been disbanded."
         elseif 1 < Count @members
-            -- remove leader
-            for i, ply in pairs @members
-                if ply == toKick
-                    remove @members, i 
-                    break
+            RemoveByValue @members, toKick
+            net.Start "rustgroup_remove_member"
+            net.WriteEntity toKick 
+            net.Send @members
+
             -- assign new leader
-            for ply in *@members    
-                @leader = ply
-                break
+            if toKick == @leader
+                for ply in *@members    
+                    @leader = ply
+                    break
 
     -- Desc: Pretty prints to the console for debug purposes
     Print: =>
