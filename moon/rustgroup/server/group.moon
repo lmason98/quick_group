@@ -11,7 +11,7 @@ GROUP =
 -- Args: Player ply (optional)
 -- Desc: Creates a new group and adds to global group table
 -- Return: Number groupID
-rustgroup.newGroup = (ply) ->
+rustgroup.NewGroup = (ply) ->
     g = Copy GROUP
 
     if ply
@@ -25,7 +25,7 @@ rustgroup.newGroup = (ply) ->
 -- Args: Number groupID
 -- Desc: Removes a group from the global group table
 -- Return: Bool success
-rustgroup.remGroup = (gID) ->
+rustgroup.RemGroup = (gID) ->
     for i, g in pairs rustgroup.groups -- need to track index in global group table
         if g.id == gID
             -- print "remGroup: gID=#{gID} g.id=#{g.id} i=#{i}"
@@ -37,7 +37,7 @@ rustgroup.remGroup = (gID) ->
 -- Args: Number gID
 -- Desc: Gets the group with the given gID
 -- Return: Group table or false if not found
-rustgroup.getGroup = (gID) ->
+rustgroup.GetGroup = (gID) ->
     for g in *rustgroup.groups
         if g.id == gID
             return g
@@ -45,7 +45,7 @@ rustgroup.getGroup = (gID) ->
     return false
 
 -- Desc: Prints the global group table
-rustgroup.printGroups = ->
+rustgroup.PrintGroups = ->
     for g in *rustgroup.groups
         print "\n*------------------------------*"
         print "\t Leader: #{g.leader\GetName! or "NULL"}"
