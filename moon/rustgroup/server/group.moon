@@ -1,75 +1,56 @@
-import insert, IsEmpty, Count, remove, RemoveByValue from table
+import insert, remove, Copy, Count from table
 
-rustgroup.GetGroup = (i) ->
+rustgroup.groups = {}
 
-export class RustGroup
-    -- Desc: Inits the RustGroup object
-    -- Args: Player leader
-    -- Return: Number index, RustGroup object 
-    New: (leader) =>
-        @members = {}
-        @index = -1
+MAX_MEMS = rustgroup.cfg.max_group_size -- maximum amount of members allowed in a group
+GROUP =
+    leader: nil -- Player
+    members: {} -- table of Players
+    id: -1 -- group id
 
-        if leader\IsValid!
-            @leader = leader 
-            @index = insert rustgroup.groups, @
-            @\Add leader
-            @\Print!
+-- Args: Player ply (optional)
+-- Desc: Creates a new group and adds to global group table
+-- Return: Number groupID
+rustgroup.newGroup = (ply) ->
+    g = Copy GROUP
 
-        return @index, @
+    if ply
+        g.leader = ply -- set leader as ply
+        ply\SetGroupI insert g.members, ply -- insert ply
 
-    Remove: =>
-        remove rustgroup.groups, @index
-        net.Start "rustgroup_group_disbanded"
-        net.Send @members
+    g.id = insert rustgroup.groups, g -- index in global group table
 
-    -- Desc: Determines if the current group Is Valid
-    -- Return: Bool isValid
-    IsValid: => return @leader\IsValid! and 0 < Count @members
+    return g.id
 
-    -- Desc: Checks if the passed player is the leader of this group
-    -- Args: Player ply
-    -- Return Bool isLeader
-    IsLeader: (ply) => return @leader == ply
+-- Args: Number groupID
+-- Desc: Removes a group from the global group table
+-- Return: Bool success
+rustgroup.remGroup = (gID) ->
+    for i, g in pairs rustgroup.groups -- need to track index in global group table
+        if g.id == gID
+            -- print "remGroup: gID=#{gID} g.id=#{g.id} i=#{i}"
+            remove rustgroup.groups, i -- should be proper group index
+            return true
 
-    -- Desc: Get/Set the group index
-    -- Args: Number index 
-    -- Return: Number index 
-    SetIndex: (i) => @index = i
-    GetIndex: => return @index
+    return false
 
-    -- Desc: Adds a player to the group
-    -- Args: Player newPly
-    Add: (newPly) =>
-        insert @members, newPly 
+-- Args: Number gID
+-- Desc: Gets the group with the given gID
+-- Return: Group table or false if not found
+rustgroup.getGroup = (gID) ->
+    for g in *rustgroup.groups
+        if g.id == gID
+            return g
 
-        -- send new ply to existing members
-        net.Start "rustgroup_add_member"
-        net.WriteEntity newPly 
-        net.Send @members
+    return false
 
-    -- Desc: Kicks a player from the group
-    -- Args: Player toKick
-    Kick: (toKick) =>
-        if 1 == Count @members
-            @\Remove! 
-            toKick\ChatPrint "Your group has been disbanded."
-        elseif 1 < Count @members
-            RemoveByValue @members, toKick
-            net.Start "rustgroup_remove_member"
-            net.WriteEntity toKick 
-            net.Send @members
-
-            -- assign new leader
-            if toKick == @leader
-                for ply in *@members    
-                    @leader = ply
-                    break
-
-    -- Desc: Pretty prints to the console for debug purposes
-    Print: =>
-        print " Leader: #{@leader\GetName!}"
-        print " Index: #{@index}"
-        if not IsEmpty @members
-            print " Members:"
-            print "\t[#{i}]: #{ply\GetName!}" for i, ply in pairs @members
+-- Desc: Prints the global group table
+rustgroup.printGroups = ->
+    for g in *rustgroup.groups
+        print "\n*------------------------------*"
+        print "\t Leader: #{g.leader\GetName! or "NULL"}"
+        mems = "\t Members: "
+        mems ..= "[ply=#{ply\GetName!} id=#{ply\GetGroupI!}]->" for ply in *g.members
+        print mems
+        print "\t Id: #{g.id}"
+        print "*------------------------------*\n"
