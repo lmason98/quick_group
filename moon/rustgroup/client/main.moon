@@ -1,3 +1,7 @@
+import insert, RemoveByValue from table
+
+rustgroup.members = {} -- members in LocalPlayer's group
+
 --[[-------------------------
 --    Console Variables
 --]]-------------------------
@@ -19,15 +23,14 @@ cvars.AddChangeCallback "rustgroup_hud_widget_size", () -> rustgroup.UpdateCVarV
 --]]-------------------------
 
 -- Desc: Shows the create group menu button if a player isn't in a group
-hook.Add "OnContextMenuOpen", "rustgroup_show_creategroup_frame", ->
-    if not LocalPlayer!\InRustGroup!
-        rustgroup.creategroup_frame = vgui.Create "rustgroup_creategroup_frame", g_ContextMenu
-        rustgroup.creategroup_frame\MoveToFront!
+hook.Add "OnContextMenuOpen", "rustgroup_show_buttons_frame", ->
+    rustgroup.buttons_frame = vgui.Create "rustgroup_buttons_frame"
+    rustgroup.buttons_frame\MakePopup!
 
 -- Desc: Hides the group create menu 
 hook.Add "OnContextMenuClose", "rustgroup_show_creategroup_frame", ->
-    if rustgroup.creategroup_frame\IsValid!
-        rustgroup.creategroup_frame\Remove!
+    if rustgroup.buttons_frame\IsValid!
+        rustgroup.buttons_frame\Remove!
 
 -- Desc: Draws the LocalPlayer's group if they're in one
 hook.Add "HUDPaint", "rustgroup_draw_group", ->
@@ -37,6 +40,24 @@ hook.Add "HUDPaint", "rustgroup_draw_group", ->
 --[[-------------------------
 --   Network Receives 
 --]]-------------------------
+net.Receive "rustgroup_member_join", (len) ->
+    print "Adding member to member table"
+    joiningMem = net.ReadEntity!
+    i = insert rustgroup.members, joiningMem
+    
+net.Receive "rustgroup_member_leave", (len) ->
+    print "Removing member from member table"
+    leavingMem = net.ReadEntity!
+    i = RemoveByValue rustgroup.members, leavingMem
+
+net.Receive "rustgroup_join_group", (len) ->
+    print "Reading member table from sv"
+    rustgroup.memers = net.ReadTable!
+
+net.Receive "rustgroup_leave_group", (len) ->
+    print "Clearing member table"
+    rustgroup.members = {}
+
 net.Receive "rustgroup_add_member", (len) -> LocalPlayer!\AddGroupMember net.ReadEntity!
 net.Receive "rustgroup_remove_member", (len) -> LocalPlayer!\RemoveGroupMember net.ReadEntity!
 net.Receive "rustgroup_group_disbanded", (len) -> LocalPlayer!\RustGroupDisbanded!

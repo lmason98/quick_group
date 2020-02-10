@@ -2,26 +2,22 @@ import insert, IsEmpty from table
 
 -- Desc: Console command for creating a new rust group
 -- Args: Player ply, String cmd, Table conArgs
-concommand.Add "CreateRustGroup", (ply) ->
-    if SERVER
-        if ply\GetGroupI! <= 0 -- if ply not in group
-            gID = rustgroup.newGroup ply
-            ply\SetGroupI gID
-            ply\ChatPrint "You've joined group=#{gID}"
-        else
-            ply\ChatPrint "You're already in a group!"
-
 if SERVER
-    -- Desc: Leaves a group
+    concommand.Add "CreateRustGroup", (ply) ->
+        gID = rustgroup.NewGroup ply
+        print " [RUSTGROUP] new group created with id=#{gID}" if gID
+
     concommand.Add "LeaveRustGroup", (ply) ->
-        if SERVER
-            ply\LeaveRustGroup! 
-    
-    -- Desc: Prints the rustgroups (DEV)
-    -- Args: Player ply
+        gID = ply\GetRustGroup!
+
+        if gID >= 0 -- if ply in group
+            rustgroup.PlyLeaveGroup ply, gID
+        else
+            ply\ChatPrint "You're not in a group!"
+
     concommand.Add "PrintRustGroups", (ply) ->
-        if SERVER and ply\IsSuperAdmin! and rustgroup.groups
-            group\Print! for group in *rustgroup.groups
+        if ply\IsSuperAdmin! and rustgroup.groups
+            rustgroup.PrintGroups!
 
 -- Desc: Prints the rustgroups (DEV)
 -- Args: Player ply
