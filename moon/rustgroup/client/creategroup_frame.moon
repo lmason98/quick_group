@@ -7,18 +7,16 @@ anim_time = 0.2
 
 frame.Build = (inGroup) =>
     btn_text = "CREATE GROUP"
-    callBack = () ->
-        net.Start "rustgroup_creategroup_pressed"
-        net.SendToServer!
+    net_msg = "rustgroup_creategroup_pressed"
 
     if inGroup
         btn_text = "LEAVE GROUP"
-        callBack = () ->
-            net.Start "rustgroup_leavegroup_pressed"
-            net.SendToServer!
+        net_msg = "rustgroup_leave_pressed"
 
     @.btn = vgui.Create "rustgroup_button", @
-    @.btn\Build FILL, {l: 0, t: 0, r: 0, b: 0}, 0, btn_text, "rustgroup_30b", callBack
+    @.btn\Build FILL, {l: 0, t: 0, r: 0, b: 0}, 0, btn_text, "rustgroup_30b", ->
+        net.Start net_msg
+        net.SendToServer!
 
     @.btn.default_col = rustgroup.cfg.creategroup_default_col
     @.btn.hovered_col = rustgroup.cfg.creategroup_hovered_col
