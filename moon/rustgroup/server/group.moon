@@ -56,7 +56,7 @@ rustgroup.GetGroup = (gID) ->
 rustgroup.PlyJoinGroup = (ply, gID) ->
     g = rustgroup.GetGroup gID
 
-    if g
+    if g and not ply\InRustGroup!
         ply\SetRustGroup g.id
         ply\ChatPrint "You've joined group=#{g.id}"
 
@@ -70,13 +70,15 @@ rustgroup.PlyJoinGroup = (ply, gID) ->
 
         insert g.members, ply
         return true
+    elseif ply\InRustGroup!
+        ply\ChatPrint "You're already in a group."
 
     return false
 
 rustgroup.PlyLeaveGroup = (ply, gID) ->
     g = rustgroup.GetGroup gID
 
-    if g and 1 < Count g.members -- still at least one player in group
+    if g and ply\InRustGroup and 1 < Count g.members -- still at least one player in group
         i = RemoveByValue g.members, ply
         ply\SetRustGroup -1
         if i >= 0 -- if actually left a group
@@ -84,7 +86,6 @@ rustgroup.PlyLeaveGroup = (ply, gID) ->
             net.WriteEntity ply
             net.Send g.members
 
-            print "sending leave_group!"
             net.Start "rustgroup_leave_group" -- clear leaving members's cl member table
             net.Send ply
 
@@ -93,12 +94,11 @@ rustgroup.PlyLeaveGroup = (ply, gID) ->
         ply\SetRustGroup -1
         rustgroup.RemGroup g.id
 
-        print "sending leave_group!"
         net.Start "rustgroup_leave_group" -- clear leaving members's cl member table
         net.Send ply
 
         ply\ChatPrint "You've disbanded group=#{g.id}"
-    else
+    elseif not g or not ply\InRustGroup!
         ply\ChatPrint "You're not in a group!"
         ply\SetRustGroup -1
 
