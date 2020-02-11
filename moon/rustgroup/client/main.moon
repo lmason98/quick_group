@@ -12,12 +12,6 @@ CreateClientConVar "rustgroup_hud_text_bold", 0, true, false, "Should hud text b
 CreateClientConVar "rustgroup_hud_text_size", 20, true, false, "Hud text size", 10, 30
 CreateClientConVar "rustgroup_hud_widget_size", 16, true, false, "Hud widget size", 10, 30
 
-cvars.AddChangeCallback "rustgroup_hud_pos_x", () -> rustgroup.UpdateCVarVals!
-cvars.AddChangeCallback "rustgroup_hud_pos_y", () -> rustgroup.UpdateCVarVals!
-cvars.AddChangeCallback "rustgroup_hud_text_bold", () -> rustgroup.UpdateCVarVals!
-cvars.AddChangeCallback "rustgroup_hud_text_size", () -> rustgroup.UpdateCVarVals!
-cvars.AddChangeCallback "rustgroup_hud_widget_size", () -> rustgroup.UpdateCVarVals!
-
 --[[-------------------------
 --    Hooks
 --]]-------------------------
