@@ -20,6 +20,7 @@ rustgroup.NewGroup = (ply) ->
     g.id = insert rustgroup.groups, g -- index in global group table
 
     if ply
+        ply\SetGroupLeader true
         g.leader = ply -- set leader as ply
         insert g.members, ply -- insert ply to group member table
         ply\SetRustGroup g.id
