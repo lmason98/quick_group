@@ -115,6 +115,7 @@ rustgroup.PlyLeaveGroup = (ply, gID) ->
             ply\ChatPrint "You've left group=#{g.id}"
     elseif g and ply\InRustGroup! -- last player has left, remove group
         ply\SetRustGroup -1
+        ply\SetGroupLeader false -- just in case
         rustgroup.RemGroup g.id
 
         net.Start "rustgroup_leave_group" -- clear leaving members's cl member table
