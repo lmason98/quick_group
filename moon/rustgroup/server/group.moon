@@ -21,19 +21,19 @@ rustgroup.NewGroup = (ply) ->
 
     if ply
         ply\SetGroupLeader true
-        g.leader = ply -- set leader as ply
+        g.leader = ply -- set leader as creating ply
         insert g.members, ply -- insert ply to group member table
         ply\SetRustGroup g.id
         ply\ChatPrint "You've created group=#{g.id}"
 
     return g.id
 
--- Args: Number groupID
+-- Args: Number group_id
 -- Desc: Removes a group from the global group table
 -- Return: Bool success
-rustgroup.RemGroup = (gID) ->
+rustgroup.RemGroup = (g_id) ->
     for i, g in pairs rustgroup.groups -- need to track index in global group table
-        if g.id == gID
+        if g.id == g_id
             -- print "remGroup: gID=#{gID} g.id=#{g.id} i=#{i}"
             remove rustgroup.groups, i -- should be proper group index
             print " [RUSTGROUP] group with id=#{g.id} disbanded."
@@ -41,12 +41,12 @@ rustgroup.RemGroup = (gID) ->
 
     return false
 
--- Args: Number gID
+-- Args: Number group_id
 -- Desc: Gets the group with the given gID
 -- Return: Group table or false if not found
-rustgroup.GetGroup = (gID) ->
+rustgroup.GetGroup = (g_id) ->
     for g in *rustgroup.groups
-        if g.id == gID
+        if g.id == g_id
             return g
 
     return false
@@ -79,7 +79,29 @@ rustgroup.PlyJoinGroup = (ply, gID) ->
 rustgroup.PlyLeaveGroup = (ply, gID) ->
     g = rustgroup.GetGroup gID
 
-    if g and ply\InRustGroup and 1 < Count g.members -- still at least one player in group
+    if g and ply\InRustGroup! and ply\IsGroupLeader! and 1 < Count g.members -- still at least one player in group and ply leaving is leader
+        i = RemoveByValue g.members, ply
+        ply\SetRustGroup -1
+        ply\SetGroupLeader false
+        if i >= 0 -- if actually left a group
+            net.Start "rustgroup_member_leave" -- remove leaving member from other member's cl member table
+            net.WriteEntity ply
+            net.Send g.members
+
+            net.Start "rustgroup_leave_group" -- clear leaving members's cl member table
+            net.Send ply
+
+            new_leader
+            for ply in *g.members -- set new leader
+                g.leader = ply
+                ply\SetGroupLeader true
+                ply\ChatPrint "You are now the group leader."
+                new_leader = ply
+                break
+
+            ply\ChatPrint "The new group leader is=#{new_leader\GetName!}"
+            ply\ChatPrint "You've left group=#{g.id}"
+    elseif g and ply\InRustGroup! and ply\IsGroupLeader! and 1 < Count g.members -- at least one player left in group and leaving ply is not leader
         i = RemoveByValue g.members, ply
         ply\SetRustGroup -1
         if i >= 0 -- if actually left a group
@@ -89,9 +111,9 @@ rustgroup.PlyLeaveGroup = (ply, gID) ->
 
             net.Start "rustgroup_leave_group" -- clear leaving members's cl member table
             net.Send ply
-
+            
             ply\ChatPrint "You've left group=#{g.id}"
-    elseif g -- last player has left, remove group
+    elseif g and ply\InRustGroup! -- last player has left, remove group
         ply\SetRustGroup -1
         rustgroup.RemGroup g.id
 

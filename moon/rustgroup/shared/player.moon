@@ -18,6 +18,5 @@ PLAYER.IsGroupLeader = () => return @\GetNWBool "group_leader", false
 -- Desc: Checks if the player is in a group
 -- Return: Bool inGroup
 PLAYER.InRustGroup = () =>
-    if @\GetRustGroup! >= 0
-        return true
+    return true if @\GetRustGroup! >= 0
     return false
