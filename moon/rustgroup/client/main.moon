@@ -1,5 +1,8 @@
 import insert, RemoveByValue from table
 
+interact_dist = 10000
+sphere_dist = math.sqrt interact_dist
+
 rustgroup.members = {} -- members in LocalPlayer's group
 
 --[[-------------------------
@@ -26,10 +29,22 @@ hook.Add "OnContextMenuClose", "rustgroup_show_creategroup_frame", ->
     if rustgroup.buttons_frame\IsValid!
         rustgroup.buttons_frame\Remove!
 
--- Desc: Draws the LocalPlayer's group if they're in one
-hook.Add "HUDPaint", "rustgroup_draw_group", ->
-    if LocalPlayer!\InRustGroup!
+-- Desc: Draws the LocalPlayer's group if they're in one,
+--       also draws the invite prompt on player's who are close
+--       to the LocalPlayer
+hook.Add "HUDPaint", "rustgroup_draw", ->
+    if LocalPlayer!\InRustGroup! -- group display
         rustgroup.DrawGroup!
+
+    if LocalPlayer!\IsGroupLeader! -- invite prompt
+        for ply in *player.GetAll!
+            continue if ply == LocalPlayer!
+            dist = LocalPlayer!\GetPos!\DistToSqr ply\GetPos!
+            rustgroup.DrawInvitePrompt ply, dist if ply and dist < interact_dist*2
+        for bot in *player.GetBots! -- remove later
+            dist = LocalPlayer!\GetPos!\DistToSqr bot\GetPos!
+            dist += 10000
+            rustgroup.DrawInvitePrompt ply, dist if ply and dist < interact_dist*2
 
 --[[-------------------------
 --   Network Receives 
@@ -52,6 +67,6 @@ net.Receive "rustgroup_leave_group", (len) ->
     print "Clearing member table"
     rustgroup.members = {}
 
-net.Receive "rustgroup_add_member", (len) -> LocalPlayer!\AddGroupMember net.ReadEntity!
-net.Receive "rustgroup_remove_member", (len) -> LocalPlayer!\RemoveGroupMember net.ReadEntity!
-net.Receive "rustgroup_group_disbanded", (len) -> LocalPlayer!\RustGroupDisbanded!
+-- net.Receive "rustgroup_add_member", (len) -> LocalPlayer!\AddGroupMember net.ReadEntity!
+-- net.Receive "rustgroup_remove_member", (len) -> LocalPlayer!\RemoveGroupMember net.ReadEntity!
+-- net.Receive "rustgroup_group_disbanded", (len) -> LocalPlayer!\RustGroupDisbanded!
