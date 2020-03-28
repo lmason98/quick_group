@@ -1,6 +1,3 @@
-EASYGROUP.config =
-{
+Qgroup.config = {}
 
-}
-
-print(" [+] Hello from shared config.lua!")
+Qgroup.config.interact_dist = 20000
