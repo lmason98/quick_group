@@ -10,7 +10,7 @@ local PLAYER = FindMetaTable("Player")
 function PLAYER:SetQGroupLeader(bool)
     self:SetNWBool("qgroup_isleader", bool) end
 function PLAYER:GetQGroupLeader()
-    self:GetNWBool("qgroup_isleader", false) end
+    return self:GetNWBool("qgroup_isleader", false) end
 
 --[[
     Realm: Shared
@@ -22,23 +22,41 @@ function PLAYER:GetQGroupLeader()
 function PLAYER:SetQGroupID(group_id)
     self:SetNWBool("qgroup_id", group_id) end
 function PLAYER:GetQGroupID()
-    self:GetNWBool("qgroup_id", -1) end
+    return self:GetNWBool("qgroup_id", -1) end
 
 if SERVER then
 
 --[[
-    Realm: Server
-    Desc: Server - Creates a new group object and inserts to global group_table.
-    Return: Server - Group object
+    Desc: Creates a new group object and inserts to global group_table.
+    Return: Group object
 ]]
 function PLAYER:CreateQGroup()
-    _DBUG("PLAYER:CreateQGroup - self=".. tostring(self))
-    local Group = Qgroup.Group(self) -- pass self as the group leader
-    _DBUG("PLAYER:CreateQGroup - Group=".. tostring(Group))
-    self:SetQGroupLeader(true)
-    self:SetQGroupID(Group.id)
+    if (self:GetQGroupID() == -1) then
+        _DBUG("PLAYER:CreateQGroup - self=".. tostring(self))
+        local Group = Qgroup.Group(self) -- pass self as the group leader
+        _DBUG("PLAYER:CreateQGroup - Group=".. tostring(Group))
+        self:SetQGroupLeader(true)
+        self:SetQGroupID(Group.id)
+    else
+        self:ChatPrint("You're already in a group!")
+    end
 
     return Group
+end
+
+--[[
+    Desc: Has player leave the group
+    Return: Bool success
+]]
+function PLAYER:LeaveQGroup()
+    if (self:GetQGroupID() ~= -1) then
+        local Group = Qgroup.GetGroup(self:GetQGroupID())
+        Group:KickMember(self) 
+        self:SetQGroupID(-1)
+        self:SetQGroupLeader(false)
+    else
+        self:ChatPrint("You're not in a group!")
+    end
 end
 
 elseif CLIENT then

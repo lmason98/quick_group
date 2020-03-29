@@ -3,7 +3,7 @@ Qgroup.debug = true
 
 function _DBUG(text)
     if Qgroup.debug then
-        print(" [+] DEBUG : [" .. text .. "]") end
+        print(" [+] DEBUG : '" .. text .. "'") end
 end
 
 local sv_prfx = "qgroup/server/"
