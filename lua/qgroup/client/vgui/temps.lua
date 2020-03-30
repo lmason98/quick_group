@@ -3,7 +3,7 @@ local anim_time = 0.2
 -- ******************** Button ******************** -- 
 
 local button = {}
-local col_btn_w = ScreenScale(10)
+local col_btn_w = ScreenScale(15) -- collapsed button width
 
 --[[
     Desc: Collapse/Expand animation
@@ -50,17 +50,25 @@ end
 ]]
 function button:Paint(w, h)
     local col = Qgroup.config.theme.btn_col
+    local text_col = Qgroup.config.theme.text_col
 
-    if (self:IsHovered()) then
-        col = Qgroup.config.theme.focused_col
-    elseif (self:IsDown()) then
+    if (self:IsDown()) then
         col = Qgroup.config.theme.btndown_col
+        text_col = Qgroup.config.theme.textselected_col
+    elseif (self:IsHovered()) then
+        col = Qgroup.config.theme.focused_col
     end
 
-    draw.RoundedBoxEx(h/2, 0, 0, w, h, col, false, true, false, true)
+    local rad = 0
+    if (w < h) then
+        rad = w/2
+    else
+        rad = h/2 end
 
-    draw.SimpleText(self.text, self.font, w/2, h/2, Qgroup.config.theme.text_col,
-        TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+    draw.RoundedBoxEx(rad, 0, 0, w, h, col, false, true, false, true)
+
+    draw.SimpleText(self.text, self.font, ScreenScale(3), h/2, text_col,
+        TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     _DBUG("button paint - draw text=".. self.text)
 end
 
@@ -70,6 +78,7 @@ end
 ]]
 function button:Init()
     self:SetText('')
+    self:SetAlpha(Qgroup.config.theme.btn_alpha)
 end
 
 vgui.Register("QGroup_button", button, "DButton")
