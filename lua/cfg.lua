@@ -14,10 +14,11 @@ Qgroup.config.theme.main_col         = Color(37,37,37,255)
 Qgroup.config.theme.outline_col      = Color(0,0,0,255)
 Qgroup.config.theme.background_col   = Color(30,30,30,255)
 
-Qgroup.config.theme.btn_alpha        = 190
-Qgroup.config.theme.btn_col          = Color(230,230,230,255)
-Qgroup.config.theme.focused_col      = Color(210,210,210,255)
-Qgroup.config.theme.btndown_col      = Color(180,180,180,255)
+Qgroup.config.theme.btn_alpha        = 255
+Qgroup.config.theme.btn_col          = Color(28,28,28,255)
+Qgroup.config.theme.btn_outline_col  = Color(56,56,56,255)
+Qgroup.config.theme.focused_col      = Color(56,56,56,255)
+Qgroup.config.theme.btndown_col      = Color(56,56,56,255)
 
-Qgroup.config.theme.text_col         = Color(100,100,100,255)
-Qgroup.config.theme.textselected_col = Color(75,75,75,255)
+Qgroup.config.theme.text_col         = Color(215,215,215,255)
+Qgroup.config.theme.textselected_col = Color(255,255,255,255)

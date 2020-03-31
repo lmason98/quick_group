@@ -50,6 +50,7 @@ end
 ]]
 function button:Paint(w, h)
     local col = Qgroup.config.theme.btn_col
+    local outline_col = Qgroup.config.theme.btn_outline_col
     local text_col = Qgroup.config.theme.text_col
 
     if (self:IsDown()) then
@@ -65,11 +66,11 @@ function button:Paint(w, h)
     else
         rad = h/2 end
 
-    draw.RoundedBoxEx(rad, 0, 0, w, h, col, false, true, false, true)
+    --draw.RoundedBoxEx(rad-2, 0, 0, w, h, outline_col, false, true, false, true) -- outline
+    draw.RoundedBoxEx(rad, 0, 0, w, h, col, false, true, false, true) -- inside
 
     draw.SimpleText(self.text, self.font, ScreenScale(3), h/2, text_col,
         TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-    _DBUG("button paint - draw text=".. self.text)
 end
 
 
