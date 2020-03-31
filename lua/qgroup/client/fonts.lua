@@ -18,5 +18,8 @@ end
 create_font(30, true)
 create_font(25, true)
 create_font(25, false)
+create_font(20, true)
 create_font(18, true)
 create_font(18, false)
+create_font(15, true)
+create_font(15, false)

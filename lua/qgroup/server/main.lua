@@ -1,5 +1,12 @@
 Qgroup.group_table = {}
 
+-- ******************** Net strings ******************** -- 
+
+util.AddNetworkString("qgroup_create_group")
+util.AddNetworkString("qgroup_add_member")
+util.AddNetworkString("qgroup_remove_member")
+util.AddNetworkString("qgroup_leave_group")
+
 -- ******************** Hooks ******************** -- 
 
 --[[
